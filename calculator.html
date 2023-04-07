@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="container">
+    <div id="calculator">
+      <div class="non-button" id="screen">0</div>
+      <div class="button" id="clear">AC</div>
+      <div class="button" id="plus-minus">+/-</div>
+      <div class="button" id="percent">%</div>
+      <div class="button operator" id="divide">/</div>
+      <div class="button" id="seven">7</div>
+      <div class="button" id="eight">8</div>
+      <div class="button" id="nine">9</div>
+      <div class="button operator" id="multiply">*</div>
+      <div class="button" id="four">4</div>
+      <div class="button" id="five">5</div>
+      <div class="button" id="six">6</div>
+      <div class="button operator" id="minus">-</div>
+      <div class="button" id="one">1</div>
+      <div class="button" id="two">2</div>
+      <div class="button" id="three">3</div>
+      <div class="button operator" id="plus">+</div>
+      <div class="button zero" id="zero">0</div>
+      <div class="button" id="dot">.</div>
+      <div class="button operator" id="equals">=</div>
+    </div>
+</div>
+</div>
+ <script>
+// the append function works but the buttons dont - need to find out why buttons dont work at all - maybe they arent given button qualitiies in css?//
+
+// Get references to the screen and calculator elements
+const screen = document.getElementById('screen');
+const calculator = document.getElementById('calculator');
+
+// Initialize variables to track user input and calculation state
+let firstInput = null;
+let secondInput = null;
+let operator = null;
+let shouldResetScreen = false;
+
+// Function to clear the calculator state and reset the screen
+const clear = function() {
+  screen.textContent = '0';
+  firstInput = null;
+  secondInput = null;
+  operator = null;
+};
+
+// Function to append a value to the screen
+const appendToScreen = function(value) {
+  // If the screen should be reset (e.g. after an operation), clear it first
+  if (shouldResetScreen) {
+    screen.textContent = '';
+    shouldResetScreen = false;
+  }
+  // Append the value to the screen
+  console.log(`Appending '${value}' to screen`);
+  screen.textContent += value;
+};
+
+// Function to set the operator for the calculation
+const setOperator = function(value) {
+  // If an operator is already set, perform the calculation
+  if (operator !== null) {
+    operate();
+  }
+  // Get the first input value from the screen and set the operator
+  firstInput = parseFloat(screen.textContent);
+  operator = value;
+  // Reset the screen for the next input value
+  shouldResetScreen = true;
+};
+
+// Function to perform the calculation and update the screen
+const operate = function() {
+  // If there is no operator set or the screen should be reset, do nothing
+  if (operator === null || shouldResetScreen) {
+    return;
+  }
+  // Get the second input value from the screen and calculate the result
+  secondInput = parseFloat(screen.textContent);
+  const result = calculateResult();
+  // Update the screen with the result, set the first input value to the result,
+  // and reset the second input value, operator, and screen for the next calculation
+  screen.textContent = result;
+  firstInput = result;
+  secondInput = null;
+  operator = null;
+  shouldResetScreen = true;
+};
+
+// Function to calculate the result of the current operation
+const calculateResult = function() {
+  switch (operator) {
+    case '+':
+      return add(firstInput, secondInput);
+    case '-':
+      return subtract(firstInput, secondInput);
+    case '*':
+      return multiply(firstInput, secondInput);
+    case '/':
+      return divide(firstInput, secondInput);
+  }
+};
+
+// Helper functions to perform basic arithmetic operations
+const add = function(a, b) {
+  return a + b;
+};
+
+const subtract = function(a, b) {
+  return a - b;
+};
+
+const multiply = function(a, b) {
+  return a * b;
+};
+
+const divide = function(a, b) {
+  return a / b;
+};
+
+// Event listener to handle button clicks on the calculator
+calculator.addEventListener('click', function(event) {
+  const target = event.target;
+  // Ignore clicks on elements that are not buttons
+  if (!target.matches('button') && target.matches('.non-button')) {
+
+    
+    return;
+  }
+
+  // Add event listener for numbers
+  if (target.matches('#zero')) {
+    appendToScreen('0');
+    return;
+  }
+
+  if (target.matches('#one')) {
+    appendToScreen('1');
+    return;
+  }
+
+  if (target.matches('#two')) {
+    appendToScreen('2');
+    return;
+  }
+
+  if (target.matches('#three')) {
+    appendToScreen('3');
+    return;
+  }
+
+  if (target.matches('#four')) {
+    appendToScreen('4');
+    return;
+  }
+
+  if (target.matches('#five')) {
+  appendToScreen('5');
+  console.log(5);
+  return;
+}
+
+  if (target.matches('#six')) {
+    appendToScreen('6');
+    return;
+  }
+
+  if (target.matches('#seven')) {
+    appendToScreen('7');
+    return;
+  }
+
+  if (target.matches('#eight')) {
+    appendToScreen('8');
+    return;
+  }
+
+  if (target.matches('#nine')) {
+    appendToScreen('9');
+    return;
+  }
+
+  if (target.matches('#dot')) {
+  // If the current screen value already includes a decimal point, do nothing
+  if (screen.textContent.includes('.')) {
+    return;
+  }
+  
+  // If the current screen value is empty, append a leading zero before the decimal point
+  if (screen.textContent === '') {
+    appendToScreen('0');
+  }
+  
+  // Append the decimal point to the current screen value
+  appendToScreen('.');
+}
+  // Handle clicks on the clear button
+  if (target.matches('#clear')) {
+    clear();
+    return;
+  }
+  // Handle clicks on the plus/minus button
+  if (target.matches('#plus-minus')) {
+    screen.textContent = parseFloat(screen.textContent) * -1;
+    return;
+  }
+  // Handle clicks on the percent button
+  if (target.matches('#percent')) {
+    screen.textContent = parseFloat(screen.textContent) / 100;
+    return;
+  }
+  // Handle clicks on operator buttons (+, -, *, /)
+  if (target.matches('.operator')) {
+    setOperator(target.textContent);
+    return;
+  }
+
+  if (target.matches('#equals')) {
+    operate();
+    return;
+  }
+
+  appendToScreen(target.textContent);
+});
+
+ </script>
+</body>
+</html>
