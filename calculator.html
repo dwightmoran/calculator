@@ -7,37 +7,34 @@
     <title>Calculator</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <div id="wrapper">
         <div id="container">
-    <div id="calculator">
-      <div class="non-button" id="screen">0</div>
-      <div class="button" id="clear">AC</div>
-      <div class="button" id="plus-minus">+/-</div>
-      <div class="button" id="percent">%</div>
-      <div class="button operator" id="divide">/</div>
-      <div class="button" id="seven">7</div>
-      <div class="button" id="eight">8</div>
-      <div class="button" id="nine">9</div>
-      <div class="button operator" id="multiply">*</div>
-      <div class="button" id="four">4</div>
-      <div class="button" id="five">5</div>
-      <div class="button" id="six">6</div>
-      <div class="button operator" id="minus">-</div>
-      <div class="button" id="one">1</div>
-      <div class="button" id="two">2</div>
-      <div class="button" id="three">3</div>
-      <div class="button operator" id="plus">+</div>
-      <div class="button zero" id="zero">0</div>
-      <div class="button" id="dot">.</div>
-      <div class="button operator" id="equals">=</div>
-    </div>
-</div>
-</div>
+          <div id="calculator">
+            <div class="non-button" id="screen">0</div>
+            <div class="button" id="clear">AC</div>
+            <div class="button" id="plus-minus">+/-</div>
+            <div class="button" id="percent">%</div>
+            <div class="button operator" id="divide">/</div>
+            <div class="button" id="seven">7</div>
+            <div class="button" id="eight">8</div>
+            <div class="button" id="nine">9</div>
+            <div class="button operator" id="multiply">*</div>
+            <div class="button" id="four">4</div>
+            <div class="button" id="five">5</div>
+            <div class="button" id="six">6</div>
+            <div class="button operator" id="minus">-</div>
+            <div class="button" id="one">1</div>
+            <div class="button" id="two">2</div>
+            <div class="button" id="three">3</div>
+            <div class="button operator" id="plus">+</div>
+            <div class="button zero" id="zero">0</div>
+            <div class="button" id="dot">.</div>
+            <div class="button operator" id="equals">=</div>
+          </div>
+        </div>
+      </div>
  <script>
-// the append function works but the buttons dont - need to find out why buttons dont work at all - maybe they arent given button qualitiies in css?//
-
 // Get references to the screen and calculator elements
 const screen = document.getElementById('screen');
 const calculator = document.getElementById('calculator');
@@ -63,9 +60,14 @@ const appendToScreen = function(value) {
     screen.textContent = '';
     shouldResetScreen = false;
   }
-  // Append the value to the screen
-  console.log(`Appending '${value}' to screen`);
-  screen.textContent += value;
+  // If the screen currently shows "0", replace it with the input value
+  if (screen.textContent === '0') {
+    screen.textContent = value;
+  } else {
+    // Append the value to the screen
+    console.log(`Appending '${value}' to screen`);
+    screen.textContent += value;
+  }
 };
 
 // Function to set the operator for the calculation
@@ -89,7 +91,9 @@ const operate = function() {
   }
   // Get the second input value from the screen and calculate the result
   secondInput = parseFloat(screen.textContent);
-  const result = calculateResult();
+  let result = calculateResult();
+  // Round the result to the nearest 5th decimal point using the toFixed() method
+  result = parseFloat(result.toFixed(5));
   // Update the screen with the result, set the first input value to the result,
   // and reset the second input value, operator, and screen for the next calculation
   screen.textContent = result;
@@ -127,24 +131,28 @@ const multiply = function(a, b) {
 };
 
 const divide = function(a, b) {
+  if (b === 0) {
+    appendToScreen ("Cannot divide by 0");
+    console.log (d);
+    return undefined;
+  }
   return a / b;
 };
 
 // Event listener to handle button clicks on the calculator
 calculator.addEventListener('click', function(event) {
   const target = event.target;
-  // Ignore clicks on elements that are not buttons
-  if (!target.matches('button') && target.matches('.non-button')) {
 
-    
+  // Ignore clicks on elements that are not buttons
+  if (!target.matches('.operator') && !target.matches('.zero') && !target.matches('.button')){
     return;
   }
 
   // Add event listener for numbers
   if (target.matches('#zero')) {
-    appendToScreen('0');
-    return;
-  }
+  appendToScreen('0');
+  return;
+}
 
   if (target.matches('#one')) {
     appendToScreen('1');
@@ -197,14 +205,11 @@ calculator.addEventListener('click', function(event) {
   if (screen.textContent.includes('.')) {
     return;
   }
-  
+
   // If the current screen value is empty, append a leading zero before the decimal point
   if (screen.textContent === '') {
     appendToScreen('0');
   }
-  
-  // Append the decimal point to the current screen value
-  appendToScreen('.');
 }
   // Handle clicks on the clear button
   if (target.matches('#clear')) {
@@ -231,10 +236,8 @@ calculator.addEventListener('click', function(event) {
     operate();
     return;
   }
-
   appendToScreen(target.textContent);
 });
-
  </script>
 </body>
 </html>
